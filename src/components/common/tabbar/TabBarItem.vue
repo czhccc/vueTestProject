@@ -25,6 +25,7 @@
     },
     computed: {
       isActive() {
+        // 采用计算属性，判断哪一个路由的路径和当前路由路径相匹配，只有匹配的路由的isActive属性会返回true然后.isActive的样式样式生效。
         return this.$route.path.indexOf(this.path) !== -1
       }
     },
