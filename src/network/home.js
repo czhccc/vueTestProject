@@ -7,7 +7,8 @@ export function getHomeMultiData() {
   })
 }
 
-export function getProductData(type, page) {
+// 获取首页展示的商品的相关数据
+export function getHomeGoods(type, page) {
   return request({
     url: '/home/data',
     params: {
