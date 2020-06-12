@@ -69,6 +69,12 @@
       this.getGoodsData('new') // 请求'新款'相关数据
       this.getGoodsData('sell') // 请求'精选'相关数据
     },
+    mounted() {
+      // 监听item中图片的加载完成 采用事件总线的方式，由 GoodsListItem组件 emit 事件，在这里进行接收
+      this.$bus.$on('itemImageLoad', () => {
+        this.$refs.scroll.refresh()
+      })
+    },
     methods: {
       /*
       网络请求相关的方法

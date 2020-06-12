@@ -54,11 +54,15 @@
     methods: {
       // 返回顶部
       scrollTo(x, y, time=300) {
-        this.scroll.scrollTo(x, y, time)
+        this.scroll && this.scroll.scrollTo(x, y, time)
       },
       // 完成上拉
       finishPullUp() {
         this.scroll.finishPullUp()
+      },
+      // 刷新
+      refresh() {
+        this.scroll && this.scroll.refresh()
       }
     }
   }

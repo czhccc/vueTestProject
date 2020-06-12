@@ -1,6 +1,6 @@
 <template>
   <div class="goods-list-item">
-    <img :src="goods.show.img" alt="">
+    <img :src="goods.show.img" alt="" @load="imageLoad">
     <div class="goods-info">
       <p>{{goods.title}}</p>
       <span class="price">{{goods.price}}</span>
@@ -18,6 +18,13 @@
         default() {
           return {}
         }
+      }
+    },
+    methods: {
+      imageLoad() {
+        // GoodsListItem 组件 与 Home 组件 之间的层级嵌套不方便进行交互
+        // 这里采用事件总线的方式，使 GoodsListItem 组件 与 Home 组件 之间进行事件交互，在 Home 组件 中接收事件
+        this.$bus.$emit('itemImageLoad') // 需要先在 main.js 文件中定义事件总线
       }
     }
   }
