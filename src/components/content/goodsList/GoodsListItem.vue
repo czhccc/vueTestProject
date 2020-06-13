@@ -1,5 +1,5 @@
 <template>
-  <div class="goods-list-item">
+  <div class="goods-list-item" @click="itemClick">
     <img :src="goods.show.img" alt="" @load="imageLoad">
     <div class="goods-info">
       <p>{{goods.title}}</p>
@@ -25,6 +25,9 @@
         // GoodsListItem 组件 与 Home 组件 之间的层级嵌套不方便进行交互
         // 这里采用事件总线的方式，使 GoodsListItem 组件 与 Home 组件 之间进行事件交互，在 Home 组件 中接收事件
         this.$bus.$emit('itemImageLoad') // 需要先在 main.js 文件中定义事件总线
+      },
+      itemClick() {
+        this.$router.push('/detail/' + this.goods.iid)
       }
     }
   }

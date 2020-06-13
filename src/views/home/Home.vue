@@ -1,19 +1,24 @@
 <template>
   <div class="home">
     <nav-bar class="home-nav-bar"><template v-slot:center>购物街</template></nav-bar>
+    <tab-control class="tab-control"
+                 v-show="isTabControlFixed"
+                 :tabControl="tabControl"
+                 @tabClick="tabClick"
+                 ref="tabControl1"/>
 
     <scroll class="content"
             ref="scroll"
             :probeType="3"
             @scroll="contentScroll"
-            :pull-up-load="true"
+            :pullUpLoad="true"
             @pullingUp="loadMore">
-      <home-swiper :banners="banners" />
+      <home-swiper :banners="banners" @swiperImageLoad="swiperImageLoad"/>
       <home-recommend :recommend="recommend" />
       <home-feature />
-      <tab-control class="tab-control"
-                   :tabControl="tabControl"
-                   @tabClick="tabClick" />
+      <tab-control :tabControl="tabControl"
+                   @tabClick="tabClick"
+                   ref="tabControl2"/>
       <goods-list :goodsDate="goods[goodsType].list" />
     </scroll>
 
@@ -31,6 +36,8 @@
 
   import Scroll from "components/common/scroll/Scroll";
   import BackTop from "components/content/backTop/BackTop";
+
+  import {debounce} from "common/utils";
 
   import {getHomeMultiData, getHomeGoods} from "network/home";
 
@@ -57,7 +64,10 @@
           'sell': {page: 0, list: []}
         },
         goodsType: 'pop', // 当前的商品数据的类型，默认为 'pop'
-        isShowBackTop: false // 是否显示 BackTop 按钮
+        isShowBackTop: false, // 是否显示 BackTop 按钮
+        tabControlTop: 0, // 记录滚动的位置，判断商品切换栏(tabControl)下拉到什么时候才有吸顶效果
+        isTabControlFixed: false, // 记录商品切换栏(tabControl)是否吸顶效果
+        saveY: 0 // 记录离开首页时的位置
       }
     },
     created() {
@@ -70,10 +80,21 @@
       this.getGoodsData('sell') // 请求'精选'相关数据
     },
     mounted() {
+      /* 图片加载完成后 better-scroll 刷新内容高度 */
+      // 使用防抖函数防止图片加载后的刷新过于频繁
+      const refresh = debounce(this.$refs.scroll.refresh, 50)
       // 监听item中图片的加载完成 采用事件总线的方式，由 GoodsListItem组件 emit 事件，在这里进行接收
       this.$bus.$on('itemImageLoad', () => {
-        this.$refs.scroll.refresh()
+        refresh()
       })
+    },
+    activated() {
+      this.$refs.scroll.scrollTo(0, this.saveY, 0)
+      this.$refs.scroll.refresh() // 刷新 better-scroll
+    },
+    deactivated() {
+      console.log(this.saveY)
+      this.saveY = this.$refs.scroll.scrollY()
     },
     methods: {
       /*
@@ -91,8 +112,17 @@
           this.goods[type].list.push(...res.data.list) // 将请求到的数据保存
           this.goods[type].page += 1 // 数据获取完成后，当前的页码需要+1
 
-          this.$refs.scroll.finishPullUp() // 上拉加载更多后
+          this.$refs.scroll.finishPullUp() // 完成上拉加载更多后，刷新 better-scroll
         })
+      },
+      /* 监听轮播图的图片加载完成之后，获取 offsetTop，用来计算商品切换栏（tabControl）下拉到什么时候才需要吸顶效果
+          接收 HomeSwiper 组件中发出的事件，确保轮播图的图片加载完成后再获取 offsetTop
+            因为轮播图的图片比较大，因此，轮播图的图片加载完成时，其他的小图片也应当也已经加载完成，所以只需要监听轮播图的图片加载完成即可 */
+      swiperImageLoad() {
+        // 获取 offsetTop 不能在 mounted() 生命周期函数中进行，因为图片还没加载完成，获取的 offsetTop 是不包括图片的
+        // 每个组件都有 $el 属性，用于获取组件中的元素
+        this.tabControlTop = this.$refs.tabControl2.$el.offsetTop
+        // console.log(this.$refs.tabControl.$el.offsetTop)
       },
 
       /*
@@ -107,15 +137,23 @@
           case 2:
             this.goodsType = 'sell';break
         }
+
+        //  2个商品切换栏(tabControl)的所选的种类保持一致
+        this.$refs.tabControl1.currentIndex = index
+        this.$refs.tabControl2.currentIndex = index
       },
       backClick() { // 右下角按钮返回顶部
         this.$refs.scroll.scrollTo(0, 0)
       },
-      contentScroll(position) { // 监听滚动的位置，用于判断是否要显示 BackTop 按钮
+      contentScroll(position) { // 监听滚动的位置
+        // 判断是否要显示 BackTop 按钮
         this.isShowBackTop = (-position.y) > 1000
+
+        // 判断商品切换栏(tabControl)是否要吸顶效果(position: fixed)
+        this.isTabControlFixed = (-position.y) > this.tabControlTop
       },
-      loadMore() {
-        this.getGoodsData(this.goodsType)
+      loadMore() { // 上拉加载更多
+        this.getGoodsData(this.goodsType) // 给当前的类型的商品请求新的数据
       }
     }
   }
@@ -130,16 +168,17 @@
   .home-nav-bar {
     background-color: var(--color-tint);
     color: #fff;
-    position: fixed;
-    left: 0;
-    right: 0;
-    top: 0;
-    z-index: 9;
+
+    /* 使用浏览器原生滚动时，让导航不跟随一起滚动 */
+    /*position: fixed;*/
+    /*left: 0;*/
+    /*right: 0;*/
+    /*top: 0;*/
+    /*z-index: 9;*/
   }
 
   .tab-control {
-    position: sticky;
-    top: 44px;
+    position: relative;
     z-index: 9;
   }
 

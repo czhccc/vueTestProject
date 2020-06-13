@@ -41,15 +41,16 @@
       // 2.监听滚动的位置
       if (this.probeType === 2 || this.probeType === 3) {
         this.scroll.on('scroll', position => {
-          // console.log(position);
           this.$emit('scroll', position)
         })
       }
 
       // 3.监听上拉事件
-      this.scroll.on('pullingUp', () => {
-        this.$emit('pullingUp')
-      })
+      if (this.pullUpLoad) {
+        this.scroll.on('pullingUp', () => {
+          this.$emit('pullingUp')
+        })
+      }
     },
     methods: {
       // 返回顶部
@@ -63,6 +64,10 @@
       // 刷新
       refresh() {
         this.scroll && this.scroll.refresh()
+      },
+      // 当前页面滚动到的位置
+      scrollY() {
+        return this.scroll ? this.scroll.y : 0
       }
     }
   }
