@@ -15,6 +15,7 @@ export function getRecommend() {
 	})
 }
 
+// 整合详情页所需的数据
 export class Goods {
 	constructor(itemInfo, columns, services) {
 		this.title = itemInfo.title
@@ -28,15 +29,7 @@ export class Goods {
 	}
 }
 
-export class GoodsParam {
-	constructor(info, rule) {
-		// 注: images可能没有值(某些商品有值, 某些没有值)
-		this.image = info.images ? info.images[0] : '';
-		this.infos = info.set;
-		this.sizes = rule.tables;
-	}
-}
-
+// 店铺的数据
 export class Shop {
 	constructor(shopInfo) {
 		this.logo = shopInfo.shopLogo;
@@ -47,3 +40,14 @@ export class Shop {
 		this.goodsCount = shopInfo.cGoods
 	}
 }
+
+// 参数的数据
+export class GoodsParam {
+	constructor(info, rule) {
+		// 注: images可能没有值(某些商品有值, 某些没有值)
+		this.image = info.images ? info.images[0] : '';
+		this.infos = info.set;
+		this.sizes = rule.tables;
+	}
+}
+
