@@ -52,6 +52,12 @@
         })
       }
     },
+    computed: {
+      // 当前页面滚动到的位置
+      scrollY() {
+        return this.scroll.y
+      }
+    },
     methods: {
       // 返回顶部
       scrollTo(x, y, time=300) {
@@ -65,10 +71,6 @@
       refresh() {
         this.scroll && this.scroll.refresh()
       },
-      // 当前页面滚动到的位置
-      scrollY() {
-        return this.scroll ? this.scroll.y : 0
-      }
     }
   }
 </script>

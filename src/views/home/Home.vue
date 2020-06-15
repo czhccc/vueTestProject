@@ -22,7 +22,7 @@
       <goods-list :goodsDate="goods[goodsType].list" />
     </scroll>
 
-    <back-top class="back-top" @click.native="backClick" v-show="isShowBackTop" />
+    <back-top @click.native="backTop" v-show="isShowBackTop" />
   </div>
 </template>
 
@@ -39,6 +39,8 @@
 
   import {debounce} from "common/utils";
 
+  import {backTopMixin} from 'common/mixin'
+
   import {getHomeMultiData, getHomeGoods} from "network/home";
 
   export default {
@@ -51,8 +53,9 @@
       TabControl,
       GoodsList,
       Scroll,
-      BackTop
+      BackTop,
     },
+    mixins: [backTopMixin],
     data() {
       return {
         banners: [], // 轮播图的数据
@@ -64,7 +67,6 @@
           'sell': {page: 0, list: []}
         },
         goodsType: 'pop', // 当前的商品数据的类型，默认为 'pop'
-        isShowBackTop: false, // 是否显示 BackTop 按钮
         tabControlTop: 0, // 记录滚动的位置，判断商品切换栏(tabControl)下拉到什么时候才有吸顶效果
         isTabControlFixed: false, // 记录商品切换栏(tabControl)是否吸顶效果
         saveY: 0 // 记录离开首页时的位置
@@ -82,9 +84,9 @@
     mounted() {
       /* 图片加载完成后 better-scroll 刷新内容高度 */
       // 使用防抖函数防止图片加载后的刷新过于频繁
-      const refresh = debounce(this.$refs.scroll.refresh, 50)
       // 监听item中图片的加载完成 采用事件总线的方式，由 GoodsListItem组件 emit 事件，在这里进行接收
-      this.$bus.$on('itemImageLoad', () => {
+      const refresh = debounce(this.$refs.scroll.refresh, 50)
+      this.$bus.$on('homeItemImageLoad', () => {
         refresh()
       })
     },
@@ -93,8 +95,7 @@
       this.$refs.scroll.refresh() // 刷新 better-scroll
     },
     deactivated() {
-      console.log(this.saveY)
-      this.saveY = this.$refs.scroll.scrollY()
+      this.saveY = this.$refs.scroll.scrollY
     },
     methods: {
       /*
@@ -146,11 +147,8 @@
         this.$refs.scroll.scrollTo(0, 0)
       },
       contentScroll(position) { // 监听滚动的位置
-        // 判断是否要显示 BackTop 按钮
-        this.isShowBackTop = (-position.y) > 1000
-
-        // 判断商品切换栏(tabControl)是否要吸顶效果(position: fixed)
-        this.isTabControlFixed = (-position.y) > this.tabControlTop
+        this.isTabControlFixed = (-position.y) > this.tabControlTop // 判断商品切换栏(tabControl)是否要吸顶效果(position: fixed)
+        this.showBackTop(position) // 是否显示 backTop 按钮
       },
       loadMore() { // 上拉加载更多
         this.getGoodsData(this.goodsType) // 给当前的类型的商品请求新的数据

@@ -9,12 +9,6 @@ export function getDetail(iid) {
 	})
 }
 
-export function getRecommend() {
-	return request({
-		url: '/recommend'
-	})
-}
-
 // 整合详情页所需的数据
 export class Goods {
 	constructor(itemInfo, columns, services) {
@@ -41,7 +35,7 @@ export class Shop {
 	}
 }
 
-// 参数的数据
+// 商品参数的数据
 export class GoodsParam {
 	constructor(info, rule) {
 		// 注: images可能没有值(某些商品有值, 某些没有值)
@@ -51,3 +45,9 @@ export class GoodsParam {
 	}
 }
 
+// 商品推荐的数据
+export function getRecommend() {
+	return request({
+		url: '/recommend'
+	})
+}
