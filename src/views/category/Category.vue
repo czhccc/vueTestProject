@@ -5,8 +5,17 @@
 </template>
 
 <script>
+
   export default {
-    name: "Category"
+    name: "Category",
+    components: {
+      Toast
+    },
+    data() {
+      return {
+        abc: true
+      }
+    },
   }
 </script>
 

@@ -93,9 +93,15 @@
     activated() {
       this.$refs.scroll.scrollTo(0, this.saveY, 0)
       this.$refs.scroll.refresh() // 刷新 better-scroll
+
+      console.log('Home.vue activated');
+
     },
     deactivated() {
       this.saveY = this.$refs.scroll.scrollY
+
+      console.log('Home.vue deactivated');
+
     },
     methods: {
       /*

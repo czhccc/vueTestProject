@@ -13,7 +13,7 @@
     </scroll>
 
     <back-top @click.native="backTop" v-show="isShowBackTop" />
-    <detail-bottom-bar />
+    <detail-bottom-bar @addCart="addGoodsToCart" />
 
   </div>
 </template>
@@ -36,6 +36,8 @@
   import {debounce} from "common/utils";
 
   import {backTopMixin} from 'common/mixin'
+
+  import {mapActions} from 'vuex'
 
   export default {
     name: "Detail",
@@ -112,8 +114,6 @@
         this.themeTopYs.push(this.$refs.param.$el.offsetTop)
         this.themeTopYs.push(this.$refs.comment.$el.offsetTop)
         this.themeTopYs.push(this.$refs.recommend.$el.offsetTop)
-
-        console.log('123456');
       }, 60)
 
     },
@@ -127,6 +127,7 @@
       })
     },
     methods: {
+      ...mapActions(['addToCart']),
       imageLoad() { // 图片加载完成后刷新better-scroll
         this.$refs.scroll.refresh()
 
@@ -149,7 +150,20 @@
 
         this.showBackTop(position) // 是否显示 backTop 按钮
       },
+      addGoodsToCart() { // 接收事件，将商品添加到购物车
+        const product = {}
+        product.image = this.swiperImages[0];
+        product.title = this.goods.title;
+        product.desc = this.goods.desc;
+        product.price = this.goods.realPrice;
+        product.iid = this.iid;
 
+        // 映射action后，直接调用action中的addToCart方法
+        this.addToCart(product).then(res => {
+          this.$toast.toShow(res, 1000)
+        })
+
+      }
     }
   }
 </script>
