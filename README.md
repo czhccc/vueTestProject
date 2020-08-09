@@ -1,6 +1,5 @@
 # myvue
 
-<<<<<<< HEAD
 模仿coderwhy王红元老师的b站视频Vue项目
 
 并且：
