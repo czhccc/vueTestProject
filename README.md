@@ -1,5 +1,6 @@
 # myvue
 
+<<<<<<< HEAD
 模仿coderwhy王红元老师的b站视频Vue项目
 
 并且：
@@ -20,7 +21,7 @@
    ​		正确：this.saveY = -this.$refs.scroll.scroll.y
    ​		错误：this.saveY = -this.$refs.scroll.scrollY （scrollY为Scroll.vue中的方法：scrollY() {return this.scroll.y}）
 
-   
+4. ...
 
 ## Project setup
 ```
