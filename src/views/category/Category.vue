@@ -9,11 +9,11 @@
   export default {
     name: "Category",
     components: {
-      Toast
+      
     },
     data() {
       return {
-        abc: true
+        
       }
     },
   }

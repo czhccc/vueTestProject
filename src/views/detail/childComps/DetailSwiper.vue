@@ -1,7 +1,8 @@
 <template>
   <div>
-    <swiper class="detail-swiper">
-      <swiper-item v-for="item in swiperImages">
+    <!-- 修复轮播图bug，需要加上 v-if="banners.length" ，有图片时才渲染轮播图 -->
+    <swiper class="detail-swiper" v-if="swiperImages.length">
+      <swiper-item v-for="(item, index) in swiperImages" :key="index">
         <img :src="item" alt="">
       </swiper-item>
     </swiper>

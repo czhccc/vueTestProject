@@ -53,12 +53,14 @@
       }
     },
     computed: {
-      // 当前页面滚动到的位置
-      scrollY() {
-        return this.scroll.y
-      }
+      
     },
     methods: {
+      /* 注意：Home页面不要使用封装的scrollY()方法，而是直接获取，否则会有返回Home页面时回到顶部的bug */
+      // 用于Home.vue中获取离开页面时记录的Y值
+      // scrollY() {
+      //   return this.scroll.y
+      // },
       // 返回顶部
       scrollTo(x, y, time=300) {
         this.scroll && this.scroll.scrollTo(x, y, time)

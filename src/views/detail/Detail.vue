@@ -175,6 +175,7 @@
     background-color: #fff;
 
     height: 100vh;
+    padding-bottom: 60px;
   }
 
   .detail-nav-bar {

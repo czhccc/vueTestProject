@@ -91,15 +91,16 @@
       })
     },
     activated() {
-      this.$refs.scroll.scrollTo(0, this.saveY, 0)
+      console.log(this.saveY)
+      this.$refs.scroll.scrollTo(0, -this.saveY, 10)
       this.$refs.scroll.refresh() // 刷新 better-scroll
-
       console.log('Home.vue activated');
 
     },
     deactivated() {
-      this.saveY = this.$refs.scroll.scrollY
-
+      this.saveY = -this.$refs.scroll.scroll.y
+      // this.saveY = -this.$refs.scroll.scrollY // 不要使用封装的scrollY，而是直接获取，否则会有回到顶部的bug
+      console.log(this.saveY)
       console.log('Home.vue deactivated');
 
     },
