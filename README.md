@@ -10,7 +10,7 @@
 
    ​	原因：图片数据没有请求到时，轮播图相关DOM已经进行渲染
 
-   ​	解决方法：在<Swiper>组件中添加：v-if="banners.length"
+   ​	解决方法：在`<Swiper>`组件中添加：v-if="banners.length"
 
 3. 解决Home页面离开返回后不会停留在原来位置的问题（完成，尝试20+次，没有再出现bug）
 
